@@ -1,6 +1,6 @@
 ﻿using Exercise.Exceptions;
-using Exercise.ServiceModels;
-using Exercise.Services.Abstraction;
+using Exercise.Services.Models;
+using Exercise.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Events;
@@ -49,19 +49,19 @@ namespace Exercise.API.Controllers
             {
                 var contacts = _contactService.GetContactsWithCompanyAndCountry();
 
-                List<ContactDetails> contactDetails = new List<ContactDetails>();
+                //List<ContactDetails> contactDetails = new List<ContactDetails>();
 
-                foreach (var contact in contacts)
-                {
-                    contactDetails.Add(new ContactDetails
-                    {
-                        Id = contact.Id,
-                        Name = contact.Name,
-                        Company = _companyService.GetCompanyById(contact.CompanyId).Name,
-                        Country = _countryService.GetCountryById(contact.CountryId).Name
-                    });
-                }
-                return Ok(contactDetails);
+                //foreach (var contact in contacts)
+                //{
+                //    contactDetails.Add(new ContactDetails
+                //    {
+                //        Id = contact.Id,
+                //        Name = contact.Name,
+                //        Company = contact.Company.Value,
+                //        Country = contact.Country.Value
+                //    });
+                //}
+                return Ok(contacts);
             }
             catch(ContactException ex)
             {
@@ -110,7 +110,7 @@ namespace Exercise.API.Controllers
             catch (Exception ex)
             {
                 Log.Write(LogEventLevel.Fatal, ex.Message);
-                return BadRequest("There was something wrong with the Api.");
+                return BadRequest(ex.Message);
             }
         }
 

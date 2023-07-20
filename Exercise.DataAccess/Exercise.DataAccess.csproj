@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Exercise.DataModels\Exercise.DataModels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

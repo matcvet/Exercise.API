@@ -1,21 +1,19 @@
-﻿using AutoMapper;
-using Exercise.DataAccess.Abstraction;
+﻿using Exercise.DataAccess.Abstraction;
 using Exercise.DataModels;
 using Exercise.Exceptions;
-using Exercise.ServiceModels;
-using Exercise.Services.Abstraction;
+using Exercise.Services.Interfaces;
+using Exercise.Services.MapperProfiles;
+using Exercise.Services.Models;
 
 namespace Exercise.Services.Implementation
 {
     public class CompanyService : ICompanyService
     {
         private readonly IRepository<CompanyDto> _companyRepository;
-        private readonly IMapper _mapper;
 
-        public CompanyService(IRepository<CompanyDto> companyRepository, IMapper mapper)
+        public CompanyService(IRepository<CompanyDto> companyRepository)
         {
             _companyRepository = companyRepository;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -33,7 +31,7 @@ namespace Exercise.Services.Implementation
                 throw new CompanyException($"Company with id: ${id} doesn't exist.");
             }
 
-            return _mapper.Map<CompanyServiceModel>(company);
+            return CompanyMapperProfile.CompanyDtoToModel(company);
         }
 
         /// <summary>
@@ -50,7 +48,7 @@ namespace Exercise.Services.Implementation
                 throw new CompanyException("Something went wrong while fetchig all companies");
             }
 
-            return _mapper.Map<List<CompanyServiceModel>>(companies);
+            return CompanyMapperProfile.CompanyDtoToModel(companies);
         }
 
         /// <summary>
@@ -71,7 +69,7 @@ namespace Exercise.Services.Implementation
                 throw new CompanyException("Company already exists in database.");
             }
 
-            _companyRepository.Create(_mapper.Map<CompanyDto>(model));
+            _companyRepository.Create(CompanyMapperProfile.CompanyModelToDto(model));
             return model.Id;
         }
 
@@ -113,7 +111,7 @@ namespace Exercise.Services.Implementation
             companyToUpdate.Name = model.Name;
 
             var updatedCompany = _companyRepository.Update(companyToUpdate);
-            return _mapper.Map<CompanyServiceModel>(updatedCompany);
+            return CompanyMapperProfile.CompanyDtoToModel(updatedCompany);
         }
     }
 }

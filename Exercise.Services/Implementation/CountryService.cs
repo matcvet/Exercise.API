@@ -1,21 +1,19 @@
-﻿using AutoMapper;
-using Exercise.DataAccess.Abstraction;
+﻿using Exercise.DataAccess.Abstraction;
 using Exercise.DataModels;
 using Exercise.Exceptions;
-using Exercise.ServiceModels;
-using Exercise.Services.Abstraction;
+using Exercise.Services.Models;
+using Exercise.Services.Interfaces;
+using Exercise.Services.MapperProfiles;
 
 namespace Exercise.Services.Implementation
 {
     public class CountryService : ICountryService
     {
         private readonly IRepository<CountryDto> _countryRepository;
-        private readonly IMapper _mapper;
 
-        public CountryService(IRepository<CountryDto> countryRepository, IMapper mapper)
+        public CountryService(IRepository<CountryDto> countryRepository)
         {
             _countryRepository = countryRepository;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -33,7 +31,7 @@ namespace Exercise.Services.Implementation
                 throw new CountryException($"Country with id: {id} doesn't exist");
             }
 
-            return _mapper.Map<CountryServiceModel>(country);
+            return CountryMapperProfile.CountryDtoToModel(country);
         }
 
         /// <summary>
@@ -50,7 +48,7 @@ namespace Exercise.Services.Implementation
                 throw new CountryException("There was an error while fetching countries list");
             }
 
-            return _mapper.Map<List<CountryServiceModel>>(countries);
+            return CountryMapperProfile.CountryDtoToModel(countries);
         }
 
         /// <summary>
@@ -71,7 +69,7 @@ namespace Exercise.Services.Implementation
                 throw new CountryException("Country already exists in database.");
             }
 
-            _countryRepository.Create(_mapper.Map<CountryDto>(model));
+            _countryRepository.Create(CountryMapperProfile.CountryModelToDto(model));
             return model.Id;
         }
 
@@ -113,7 +111,7 @@ namespace Exercise.Services.Implementation
             countryToUpdate.Name = model.Name;
 
             var updatedCountry = _countryRepository.Update(countryToUpdate);
-            return _mapper.Map<CountryServiceModel>(updatedCountry);
+            return CountryMapperProfile.CountryDtoToModel(updatedCountry);
         }
     }
 }

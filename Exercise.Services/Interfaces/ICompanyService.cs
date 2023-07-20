@@ -1,6 +1,6 @@
-﻿using Exercise.ServiceModels;
+﻿using Exercise.Services.Models;
 
-namespace Exercise.Services.Abstraction
+namespace Exercise.Services.Interfaces
 {
     public interface ICompanyService
     {

@@ -1,6 +1,6 @@
-﻿namespace Exercise.ServiceModels
+﻿namespace Exercise.Services.Models
 {
-    public class CompanyServiceModel
+    public class CountryServiceModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

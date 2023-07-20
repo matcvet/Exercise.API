@@ -1,6 +1,6 @@
 ﻿using Exercise.Exceptions;
-using Exercise.ServiceModels;
-using Exercise.Services.Abstraction;
+using Exercise.Services.Models;
+using Exercise.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Events;

@@ -10,11 +10,10 @@
     <ProjectReference Include="..\Exercise.DataAccess\Exercise.DataAccess.csproj" />
     <ProjectReference Include="..\Exercise.DataModels\Exercise.DataModels.csproj" />
     <ProjectReference Include="..\Exercise.Exceptions\Exercise.Exceptions.csproj" />
-    <ProjectReference Include="..\Exercise.ServiceModels\Exercise.ServiceModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.0" />
+    <PackageReference Include="FluentValidation" Version="11.6.0" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace Exercise.ServiceModels
+﻿namespace Exercise.Services.Models
 {
     public class ContactDetails
     {

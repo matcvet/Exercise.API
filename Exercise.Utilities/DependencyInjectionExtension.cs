@@ -2,7 +2,7 @@
 using Exercise.DataAccess.Abstraction;
 using Exercise.DataAccess.Repositories;
 using Exercise.DataModels;
-using Exercise.Services.Abstraction;
+using Exercise.Services.Interfaces;
 using Exercise.Services.Implementation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,12 +17,12 @@ public static class DependencyInjectionExtension
             options.UseSqlServer(connectionString);
         });
 
-        // Service registration
+        // Repository registration
         services.AddTransient<IRepository<CompanyDto>, CompanyRepository>();
         services.AddTransient<IRepository<ContactDto>, ContactRepository>();
         services.AddTransient<IRepository<CountryDto>, CountryRepository>();
 
-        // Repository registration
+        // Service registration
         services.AddTransient<IContactService, ContactService>();
         services.AddTransient<ICompanyService, CompanyService>();
         services.AddTransient<ICountryService, CountryService>();

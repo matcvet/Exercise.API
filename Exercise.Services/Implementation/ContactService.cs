@@ -1,21 +1,22 @@
-﻿using AutoMapper;
-using Exercise.DataAccess.Abstraction;
+﻿using Exercise.DataAccess.Abstraction;
 using Exercise.DataModels;
 using Exercise.Exceptions;
-using Exercise.ServiceModels;
-using Exercise.Services.Abstraction;
+using Exercise.Services.Models;
+using Exercise.Services.Interfaces;
+using Exercise.Services.Validations;
+using Exercise.Services.MapperProfiles;
+using FluentValidation;
 
 namespace Exercise.Services.Implementation
 {
     public class ContactService : IContactService
     {
         private readonly IRepository<ContactDto> _contactRepository;
-        private readonly IMapper _mapper;
+        private readonly ContactValidation contactValidation = new ContactValidation();
 
-        public ContactService(IRepository<ContactDto> contactRepository, IMapper mapper)
+        public ContactService(IRepository<ContactDto> contactRepository)
         {
             _contactRepository = contactRepository;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -33,7 +34,7 @@ namespace Exercise.Services.Implementation
                 throw new ContactException("User was not found in database.");
             }
 
-            return _mapper.Map<ContactServiceModel>(contact);
+            return ContactMapperProfile.ContactDtoToModel(contact);
         }
 
         /// <summary>
@@ -44,12 +45,13 @@ namespace Exercise.Services.Implementation
         /// <exception cref="ContactException"></exception>
         public int Create(ContactServiceModel model)
         {
+            //contactValidation.ValidateAndThrow(model);
             if (string.IsNullOrEmpty(model.Name))
             {
                 throw new ContactException("Contact name field is required.");
             }
 
-            var contact = _mapper.Map<ContactDto>(model);
+            var contact = ContactMapperProfile.ContactModelToDto(model);
             _contactRepository.Create(contact);
             return contact.Id;
         }
@@ -70,11 +72,11 @@ namespace Exercise.Services.Implementation
             }
 
             contactToUpdate.Name = model.Name;
-            contactToUpdate.CountryId = model.CountryId;
-            contactToUpdate.CompanyId = model.CompanyId;
+            contactToUpdate.CountryId = model.Country.Key;
+            contactToUpdate.CompanyId = model.Company.Key;
 
             var updatedContact = _contactRepository.Update(contactToUpdate);
-            return _mapper.Map<ContactServiceModel>(updatedContact);
+            return ContactMapperProfile.ContactDtoToModel(updatedContact);
         }
 
         /// <summary>
@@ -101,24 +103,14 @@ namespace Exercise.Services.Implementation
         /// <exception cref="ContactException"></exception>
         public List<ContactServiceModel> FilterContacts(int companyId, int countryId)
         {
-            var contacts = _contactRepository.GetAll();
+            var contacts = _contactRepository.GetAll().Where(x => x.CountryId == countryId && x.CompanyId == companyId);
 
             if(contacts == null)
             {
                 throw new ContactException("There was an error while fetching contacts list");
             }
 
-            if (companyId > 0)
-            {
-                contacts = contacts.Where(x => x.CompanyId == companyId);
-            }
-
-            if (countryId > 0)
-            {
-                contacts = contacts.Where(x => x.CountryId == countryId);
-            }
-
-            return _mapper.Map<List<ContactServiceModel>>(contacts);
+            return ContactMapperProfile.ContactDtoToModel(contacts);
         }
 
         /// <summary>
@@ -127,7 +119,7 @@ namespace Exercise.Services.Implementation
         /// <returns><see cref="List{ContactServiceModel}"/></returns>
         public List<ContactServiceModel> GetContactsWithCompanyAndCountry()
         {
-            return _mapper.Map<List<ContactServiceModel>>(_contactRepository.GetAll());
+            return ContactMapperProfile.ContactDtoToModel(_contactRepository.GetAll());
         }
     }
 }
